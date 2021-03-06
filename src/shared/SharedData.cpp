@@ -6,7 +6,7 @@ namespace SHARED
     //static variable
     bool SharedData::amIMaster = false;
     int SharedData::masterIP = -1;
-    std::list<int> SharedData::networkIPs;
+    std::set<int> SharedData::networkIPs;
 
     //Queue
     std::queue<MESSAGES::BaseMessage *> SharedData::messageQueue;
@@ -47,21 +47,21 @@ namespace SHARED
         m_amIMaster.unlock();
     }
 
-    std::list<int> SharedData::GetNetworkIPs()
+    std::set<int> SharedData::GetNetworkIPs()
     {
         m_networkIPs.lock();
         return networkIPs;
         m_networkIPs.unlock();
     }
 
-    void SharedData::SetNetworkIPs(std::list<int> _networkIPs)
+    void SharedData::SetNetworkIPs(std::set<int> _networkIPs)
     {
         m_networkIPs.lock();
         networkIPs = _networkIPs;
         m_networkIPs.unlock();
     }
 
-    std::list<int> &SharedData::GetNetworkIPs_Ref()
+    std::set<int> &SharedData::GetNetworkIPs_Ref()
     {
         // Should be muted by external call
         return networkIPs;
@@ -70,7 +70,7 @@ namespace SHARED
     void SharedData::AddElementToNetworkIPs(int networkIP)
     {
         m_networkIPs.lock();
-        networkIPs.push_back(networkIP);
+        networkIPs.insert(networkIP);
         m_networkIPs.unlock();
     }
     void SharedData::DeleteElementFromNetworkIPs(int networkIP)

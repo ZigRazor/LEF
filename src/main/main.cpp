@@ -59,6 +59,15 @@ int main(int argc, char *argv[])
         receiver->SetExit(true);
         dispatcher_thread.join();
         receiver_thread.join();
+
+        //Clean All pointer
+        if(receiver){
+            delete receiver;
+        }
+
+        if(dispatcher){
+            delete dispatcher;
+        }
    
     }
     return 0;

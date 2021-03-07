@@ -3,7 +3,7 @@
 #pragma once
 
 #include <mutex>
-#include <list>
+#include <set>
 #include <queue>
 #include "msg/BaseMessage.hpp"
 
@@ -15,7 +15,7 @@ namespace SHARED
 	private:
 		static bool amIMaster;
 		static int masterIP;
-		static std::list<int> networkIPs;
+		static std::set<int> networkIPs;
 
 		//Queue
 		static std::queue<MESSAGES::BaseMessage*> messageQueue;
@@ -34,9 +34,9 @@ namespace SHARED
 		static void SetMasterIP(int _masterIP);
 		static bool GetAmIMaster();
 		static void SetAmIMaster(bool _amIMaster);
-		static std::list<int> GetNetworkIPs();
-		static std::list<int> &GetNetworkIPs_Ref(); //this operation should be externally muted
-		static void SetNetworkIPs(std::list<int> networkIPs);
+		static std::set<int> GetNetworkIPs();
+		static std::set<int> &GetNetworkIPs_Ref(); //this operation should be externally muted
+		static void SetNetworkIPs(std::set<int> networkIPs);
 		static void AddElementToNetworkIPs(int networkIP);
 		static void DeleteElementFromNetworkIPs(int networkIP);
 

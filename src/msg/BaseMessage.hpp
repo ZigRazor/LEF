@@ -15,7 +15,7 @@ namespace MESSAGES
     public:        
 
         BaseMessage() = default;
-        ~BaseMessage() = default;
+        virtual ~BaseMessage() = default;
         BaseMessage(char *buffer);
 
         MessageHeader GetHeader() const;
@@ -24,7 +24,6 @@ namespace MESSAGES
 
         virtual bool SerializeToOstream(std::ostream* output) const;
         virtual bool ParseFromIstream(std::istream* input);
-
 
     };
 }

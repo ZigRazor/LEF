@@ -20,7 +20,7 @@ namespace MESSAGES
 	public:
 		MessageHeader();
 		~MessageHeader();
-		const unsigned int GetMessageId() const;
+		unsigned int GetMessageId() const;
 		void SetMessageId(unsigned int messageId);
 		std::string GetSenderIP_s() const;
 		void SetSenderIP_s(std::string senderIP);

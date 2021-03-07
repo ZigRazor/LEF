@@ -43,7 +43,7 @@ namespace RECEIVER
                 std::cerr << "No message received" << std::endl;  
                 usleep(1000000);                              
             }            
-            delete buffer;
+            delete[] buffer;
             buffer = nullptr;
         }
     }

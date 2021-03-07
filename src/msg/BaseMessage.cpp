@@ -5,7 +5,7 @@ namespace MESSAGES
     BaseMessage::BaseMessage(char *buffer)
     {
         std::istringstream input(buffer);
-        ParseFromIstream(&input);
+        BaseMessage::ParseFromIstream(&input);
     }
 
     void BaseMessage::FillHeader()

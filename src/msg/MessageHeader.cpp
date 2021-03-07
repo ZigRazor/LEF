@@ -14,7 +14,7 @@ namespace MESSAGES
     {
     }
 
-    const unsigned int MessageHeader::GetMessageId() const
+    unsigned int MessageHeader::GetMessageId() const
     {
         return messageId;
     }

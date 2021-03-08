@@ -1,9 +1,12 @@
 #include "DisconnectFromNet_Msg.hpp"
+#include "channel/ChannelDefinition.hpp"
 
 namespace MESSAGES
 {
+    
     DisconnectFromNet_Msg::DisconnectFromNet_Msg()
     {
+        MSG_CHANNEL = "ConnDisc_Channel";
     }
 
     DisconnectFromNet_Msg::~DisconnectFromNet_Msg()
@@ -27,6 +30,12 @@ namespace MESSAGES
         header.SetCurrentTime();
         header.SetMessageId(MSG_ID);
         header.SetSenderIP_s(senderIP); //To Set Sender IP
+        if(CHANNEL::ChannelDefinition::getChannelByName(MSG_CHANNEL)){
+            header.SetReceiverIP_s(CHANNEL::ChannelDefinition::getChannelByName(MSG_CHANNEL)->GetIP());
+            header.SetReceiverPort(CHANNEL::ChannelDefinition::getChannelByName(MSG_CHANNEL)->GetPort());
+        }else{
+            //ERROR
+        }
         header.SetDataSize(0);
     }
 

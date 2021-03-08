@@ -1,6 +1,7 @@
 #include "SharedData.hpp"
 #include <algorithm>
 
+
 namespace SHARED
 {
     //static variable
@@ -10,12 +11,19 @@ namespace SHARED
 
     //Queue
     std::queue<MESSAGES::BaseMessage *> SharedData::messageQueue;
+    std::queue<MESSAGES::BaseMessage *> SharedData::toSendQueue;
 
     // Mutex
     std::mutex SharedData::m_amIMaster;
     std::mutex SharedData::m_masterIP;
     std::mutex SharedData::m_networkIPs;
     std::mutex SharedData::m_messageQueue;
+    std::mutex SharedData::m_toSendQueue;
+
+    // Conditional Variable
+
+    std::condition_variable SharedData::cv_messageQueue;
+	std::condition_variable SharedData::cv_toSendQueue;
 
     int SharedData::GetMasterIP()
     {
@@ -103,6 +111,29 @@ namespace SHARED
         return empty;
     }
 
+    MESSAGES::BaseMessage *SharedData::PopToSendQueue()
+    {
+        m_toSendQueue.lock();
+        MESSAGES::BaseMessage *message = toSendQueue.front();
+        toSendQueue.pop();
+        m_toSendQueue.unlock();
+        return message;
+    }
+
+    void SharedData::PushToSendQueue(MESSAGES::BaseMessage *message)
+    {
+        m_toSendQueue.lock();
+        toSendQueue.push(message);
+        m_toSendQueue.unlock();
+    }
+
+    bool SharedData::isToSendQueueEmpty(){
+        m_toSendQueue.lock();
+        bool empty = toSendQueue.empty();
+        m_toSendQueue.unlock();
+        return empty;
+    }
+
     void SharedData::MutexLock(std::mutex &mutex)
     {
         mutex.lock();
@@ -128,5 +159,30 @@ namespace SHARED
     std::mutex &SharedData::GetMessageQueue_Mutex()
     {
         return m_messageQueue;
+    }
+
+    std::mutex &SharedData::GetToSendQueue_Mutex()
+    {
+        return m_toSendQueue;
+    }
+
+    std::condition_variable &SharedData::GetMessageQueue_CV(){
+        return cv_messageQueue;
+    }
+
+    std::condition_variable &SharedData::GetToSendQueue_CV(){
+        return cv_toSendQueue;
+    }
+
+    void SharedData::CVWait(std::condition_variable &cv, std::mutex &mutex){
+            std::unique_lock<std::mutex> lk(mutex);
+            cv.wait(lk);
+    }
+	void SharedData::CVNotifyAll(std::condition_variable &cv){
+            cv.notify_all();
+    }
+		
+    void SharedData::CVNotifyOne(std::condition_variable &cv){
+        cv.notify_one();
     }
 }

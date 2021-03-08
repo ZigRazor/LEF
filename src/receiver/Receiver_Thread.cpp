@@ -9,8 +9,10 @@ namespace RECEIVER
     {
         exit = false;
         //Setup Customer
-        std::cout << "Receiver Thread connetion IP " << addr << ":" << port  << std::endl;
-        customer.init(addr,port);
+        std::cout << "Receiver Thread connetion IP " << addr << ":" << port << std::endl;
+        this->address = addr;
+        this->portNumber = port;
+        customer.init(addr, port);
         customer.connect();
 
         customer.setTimeoutOnReceive(tv);
@@ -24,25 +26,39 @@ namespace RECEIVER
     void Receiver_Thread::Run()
     {
 
-        char* buffer = nullptr;
+        char *buffer = nullptr;
         while (!exit)
         {
-            char* buffer = new char[MAXMSGSIZE];
-            int bytesReceived = customer.receiveMessage(buffer,MAXMSGSIZE);
-            if(bytesReceived > 0){ //Succesfully receive
-                MESSAGES::BaseMessage* message = MESSAGES::MessageFactory::CreateMessage(buffer);
-                if(message){
-                    SHARED::SharedData::PushMessageQueue(message);
-                    std::cout << "Enqueue message" << std::endl;
-                }else{
+            char *buffer = new char[MAXMSGSIZE];
+            int bytesReceived = customer.receiveMessage(buffer, MAXMSGSIZE);
+            if (bytesReceived > 0)
+            { //Succesfully receive
+                MESSAGES::BaseMessage *message = MESSAGES::MessageFactory::CreateMessage(buffer);
+                if (message)
+                {
+                    if (message->GetHeader().GetReceiverIP_s() != address || message->GetHeader().GetReceiverPort() != portNumber)
+                    {
+                        std::cerr << "Intecepted Wrong Message" << std::endl;
+                    }
+                    else
+                    {
+                        SHARED::SharedData::PushMessageQueue(message);
+                        SHARED::SharedData::CVNotifyAll(SHARED::SharedData::GetMessageQueue_CV());
+                        std::cout << "Enqueue message" << std::endl;
+                    }
+                }
+                else
+                {
                     //Discard Message (NOT VALID)
                     std::cerr << "Discard Message (NOT VALID)" << std::endl;
                 }
-            }else{
+            }
+            else
+            {
                 //ERROR in receive to log
-                std::cerr << "No message received" << std::endl;  
-                usleep(1000000);                              
-            }            
+                std::cerr << "No message received" << std::endl;
+                //usleep(1000000);
+            }
             delete[] buffer;
             buffer = nullptr;
         }

@@ -13,7 +13,7 @@ namespace MESSAGES
 		ConnectToNet_Msg();
 		~ConnectToNet_Msg();
 
-		static const unsigned int MSG_ID = 1001;
+		static const unsigned int MSG_ID = 1001;		
 
 		bool SerializeToOstream(std::ostream* output) const;
 		bool ParseFromIstream(std::istream* input);	

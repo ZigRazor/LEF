@@ -12,6 +12,7 @@ set(MSG_DIR ${SRC_DIR}/msg)
 set(SHARED_DIR ${SRC_DIR}/shared)
 set(RECEIVER_DIR ${SRC_DIR}/receiver)
 set(DISPATCHER_DIR ${SRC_DIR}/dispatcher)
+set(HANDLER_DIR ${SRC_DIR}/handler)
 
 
 # Add main.cpp file of project root directory as source file
@@ -24,7 +25,9 @@ set(SOURCE_FILES  ${CONNECTION_DIR}/UDPConnectionCustomer.cpp
                     ${MSG_DIR}/MessageFactory.cpp
                     ${SHARED_DIR}/SharedData.cpp
                     ${RECEIVER_DIR}/Receiver_Thread.cpp
-                    ${DISPATCHER_DIR}/Dispatcher_Thread.cpp)
+                    ${DISPATCHER_DIR}/Dispatcher_Thread.cpp
+                    ${HANDLER_DIR}/ConnectDisconnectMsg_Handler.cpp
+                    ${HANDLER_DIR}/LeaderAliveMsg_Handler.cpp)
 
 # Add executable target with source files listed in SOURCE_FILES variable
 add_executable(main_example ${MAIN_DIR}/main.cpp ${SOURCE_FILES})

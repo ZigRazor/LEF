@@ -46,6 +46,38 @@ namespace MESSAGES
         this->senderIP = senderIP;
     }
 
+    std::string MessageHeader::GetReceiverIP_s() const
+    {
+        char str[INET_ADDRSTRLEN];
+        inet_ntop(AF_INET, &(receiverIP), str, INET_ADDRSTRLEN);
+        return str;
+    }
+
+    void MessageHeader::SetReceiverIP_s(std::string receiverIP_s)
+    {
+        inet_pton(AF_INET, receiverIP_s.c_str(), &(receiverIP));
+    }
+
+    unsigned int MessageHeader::GetReceiverIP() const
+    {
+        return receiverIP;
+    }
+
+    void MessageHeader::SetReceiverIP(unsigned int receiverIP)
+    {
+        this->receiverIP = receiverIP;
+    }
+
+    unsigned int MessageHeader::GetReceiverPort() const
+    {
+        return receiverPort;
+    }
+
+    void MessageHeader::SetReceiverPort(unsigned int receiverPort)
+    {
+        this->receiverPort = receiverPort;
+    }
+
     uint64_t MessageHeader::GetTime() const
     {
         return time;
@@ -74,6 +106,8 @@ namespace MESSAGES
     {
         *output << time << FIELD_DELIMITER;
         *output << senderIP << FIELD_DELIMITER;
+        *output << receiverIP << FIELD_DELIMITER;
+        *output << receiverPort << FIELD_DELIMITER;
         *output << messageId << FIELD_DELIMITER;
         *output << dataSize << FIELD_DELIMITER;
         return true;
@@ -83,6 +117,8 @@ namespace MESSAGES
     {
         *input >> time;
         *input >> senderIP;
+        *input >> receiverIP;
+        *input >> receiverPort;
         *input >> messageId;
         *input >> dataSize;
         return true;

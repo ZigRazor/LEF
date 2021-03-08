@@ -1,5 +1,6 @@
 #include "UDPConnectionCustomer.hpp"
 
+#include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -99,6 +100,7 @@ namespace CONNECTION
         else
         {
             //error
+            std::cerr << "Customer Not Initialized or Connected" << std::endl;
             return 0;
         }
     }
@@ -116,6 +118,7 @@ namespace CONNECTION
         int result = createSocketFileDescriptor();
         if (result >= 0)
         {
+            //std::cout << "Socket Initialized" << std::endl;
             isInitialized = true;
         }
         return result;
@@ -126,6 +129,7 @@ namespace CONNECTION
         int result = bindSocket();
         if (result >= 0)
         {
+            std::cout << "Socket Connected" << std::endl;
             isConnected = true;
         }
         return result;

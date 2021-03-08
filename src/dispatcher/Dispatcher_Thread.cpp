@@ -24,15 +24,19 @@ namespace DISPATCHER
         char *buffer = nullptr;
         while (!exit)
         {
-            if (!SHARED::SharedData::isMessageQueueEmpty())
+            if (SHARED::SharedData::isMessageQueueEmpty())
             {
+                SHARED::SharedData::CVWait(SHARED::SharedData::GetMessageQueue_CV(), SHARED::SharedData::GetMessageQueue_Mutex());
+            }
+            else
+            { // message are present in queue
                 MESSAGES::BaseMessage *message = SHARED::SharedData::PopMessageQueue();
                 switch (message->GetHeader().GetMessageId())
                 {
                 case MESSAGES::ConnectToNet_Msg::MSG_ID:
                 {
                     std::cout << "Handle ConnectToNet_Msg Message" << std::endl;
-                    HANDLER::ConnectDisconnectMsg_Handler::handleConnectToNetMsg(dynamic_cast<MESSAGES::ConnectToNet_Msg *>(message));
+                    HANDLER::ConnectDisconnectMsg_Handler::handleConnectToNetMsg(dynamic_cast<MESSAGES::ConnectToNet_Msg *>(message));                    
                 }
                 break;
                 case MESSAGES::DisconnectFromNet_Msg::MSG_ID:
@@ -58,11 +62,6 @@ namespace DISPATCHER
                 }
                 break;
                 }
-            }
-            else
-            {
-                //wait
-                usleep(100000);
             }
         }
     }

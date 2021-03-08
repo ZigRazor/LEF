@@ -11,6 +11,8 @@ namespace RECEIVER
 	private:
 		CONNECTION::UDPConnectionCustomer customer;
 		bool exit;
+		std::string address;
+		unsigned int portNumber;
 
 	public:
 		Receiver_Thread(std::string addr, unsigned int port, struct timeval tv = {1,0});

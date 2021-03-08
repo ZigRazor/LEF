@@ -11,7 +11,7 @@ namespace MESSAGES
     {
     protected:
         MessageHeader header;
-        
+        std::string MSG_CHANNEL;
     public:        
 
         BaseMessage() = default;

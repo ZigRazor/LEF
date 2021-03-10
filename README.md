@@ -21,8 +21,7 @@ Work in Progess
 Work in Progess
 
 ## How to contribute [![GitHub contributors](https://img.shields.io/github/contributors/ZigRazor/LEF.svg)](https://GitHub.com/ZigRazor/LEF/graphs/contributors/)
-If you want give your support you can create a ***pull request***   [![GitHub pull-requests](https://img.shields.io/github/issues-pr/ZigRazor/LEF.svg)](https://GitHub.com/ZigRazor/LEF/pull/) or report an ***issue***  [![GitHub issues](https://img.shields.io/github/issues/ZigRazor/LEF.svg)](https://GitHub.com/ZigRazor/LEF/issues/).
-
+Read the [CONTRIBUTING GUIDE](https://github.com/ZigRazor/LEF/blob/main/CONTRIBUTING.md)
 ## Contact
 E-Mail : zigrazor@gmail.com
 

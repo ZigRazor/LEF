@@ -17,6 +17,7 @@ namespace SHARED
 		static bool amIMaster;
 		static int masterIP;
 		static std::set<int> networkIPs;
+		static bool startingDataUpdated;
 
 		//Queue
 		static std::queue<MESSAGES::BaseMessage*> messageQueue;
@@ -26,6 +27,7 @@ namespace SHARED
 		static std::mutex m_amIMaster;
 		static std::mutex m_masterIP;
 		static std::mutex m_networkIPs;
+		static std::mutex m_startingDataUpdated;
 		static std::mutex m_messageQueue;
 		static std::mutex m_toSendQueue;
 
@@ -33,6 +35,7 @@ namespace SHARED
 
 		static std::condition_variable cv_messageQueue;
 		static std::condition_variable cv_toSendQueue;
+		static std::condition_variable cv_startingDataUpdated;
 
 	public:
 		SharedData() = delete;
@@ -45,6 +48,8 @@ namespace SHARED
 		static std::set<int> GetNetworkIPs();
 		static std::set<int> &GetNetworkIPs_Ref(); //this operation should be externally muted
 		static void SetNetworkIPs(std::set<int> networkIPs);
+		static bool GetStartingDataUpdated();
+		static void SetStartingDataUpdated(bool _startingDataUpdated);
 		static void AddElementToNetworkIPs(int networkIP);
 		static void DeleteElementFromNetworkIPs(int networkIP);
 
@@ -63,6 +68,7 @@ namespace SHARED
 
 		// Conditional Variable Operation
 		static void CVWait(std::condition_variable &cv, std::mutex &mutex);
+		static int CVWaitFor(std::condition_variable &cv, std::mutex &mutex, unsigned int timeout_ms);
 		static void CVNotifyAll(std::condition_variable &cv);
 		static void CVNotifyOne(std::condition_variable &cv);
 
@@ -70,12 +76,15 @@ namespace SHARED
 		static std::mutex &GetAmIMaster_Mutex();
 		static std::mutex &GetMasterIP_Mutex();
 		static std::mutex &GetNetworkIPs_Mutex();
+		static std::mutex &GetStartingDataUpdated_Mutex();
 		static std::mutex &GetMessageQueue_Mutex();
 		static std::mutex &GetToSendQueue_Mutex();
 
 		// Get Conditional Variable References
 		static std::condition_variable &GetMessageQueue_CV();
 		static std::condition_variable &GetToSendQueue_CV();
+		static std::condition_variable &GetStartingDataUpdated_CV();
+
 	};
 
 }

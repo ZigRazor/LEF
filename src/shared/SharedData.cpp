@@ -1,13 +1,14 @@
 #include "SharedData.hpp"
 #include <algorithm>
-
-
+#include <chrono>
+using namespace std::chrono_literals;
 namespace SHARED
 {
     //static variable
     bool SharedData::amIMaster = false;
-    int SharedData::masterIP = -1;
+    int SharedData::masterIP = -1; // invalid initialization
     std::set<int> SharedData::networkIPs;
+    bool SharedData::startingDataUpdated = false;
 
     //Queue
     std::queue<MESSAGES::BaseMessage *> SharedData::messageQueue;
@@ -17,6 +18,7 @@ namespace SHARED
     std::mutex SharedData::m_amIMaster;
     std::mutex SharedData::m_masterIP;
     std::mutex SharedData::m_networkIPs;
+    std::mutex SharedData::m_startingDataUpdated;
     std::mutex SharedData::m_messageQueue;
     std::mutex SharedData::m_toSendQueue;
 
@@ -24,6 +26,8 @@ namespace SHARED
 
     std::condition_variable SharedData::cv_messageQueue;
 	std::condition_variable SharedData::cv_toSendQueue;
+    std::condition_variable SharedData::cv_startingDataUpdated;
+
 
     int SharedData::GetMasterIP()
     {
@@ -86,6 +90,18 @@ namespace SHARED
         m_networkIPs.lock();
         networkIPs.erase(std::find(networkIPs.begin(), networkIPs.end(), networkIP));
         m_networkIPs.unlock();
+    }
+
+    bool SharedData::GetStartingDataUpdated(){
+        m_startingDataUpdated.lock();
+        bool _startingDataUpdated = startingDataUpdated;
+        m_startingDataUpdated.unlock();
+        return _startingDataUpdated;
+    }
+	void SharedData::SetStartingDataUpdated(bool _startingDataUpdated){
+        m_startingDataUpdated.lock();
+        startingDataUpdated = _startingDataUpdated;
+        m_startingDataUpdated.unlock();
     }
 
     MESSAGES::BaseMessage *SharedData::PopMessageQueue()
@@ -166,6 +182,11 @@ namespace SHARED
         return m_toSendQueue;
     }
 
+    std::mutex &SharedData::GetStartingDataUpdated_Mutex()
+    {
+        return m_startingDataUpdated;
+    }
+
     std::condition_variable &SharedData::GetMessageQueue_CV(){
         return cv_messageQueue;
     }
@@ -174,9 +195,23 @@ namespace SHARED
         return cv_toSendQueue;
     }
 
+    std::condition_variable &SharedData::GetStartingDataUpdated_CV(){
+        return cv_startingDataUpdated;
+    }
+
     void SharedData::CVWait(std::condition_variable &cv, std::mutex &mutex){
             std::unique_lock<std::mutex> lk(mutex);
             cv.wait(lk);
+    }
+
+    int SharedData::CVWaitFor(std::condition_variable &cv, std::mutex &mutex, unsigned int timeout_ms){
+            int result = 0;
+            std::unique_lock<std::mutex> lk(mutex);
+            //DEBUG auto start = std::chrono::system_clock::now();
+            cv.wait_for(lk,timeout_ms*1ms);
+            //DEBUG auto end = std::chrono::system_clock::now();
+            //DEBUG std::cout << "waiting for " << (end -start).count() << std::endl;
+            return result;
     }
 	void SharedData::CVNotifyAll(std::condition_variable &cv){
             cv.notify_all();

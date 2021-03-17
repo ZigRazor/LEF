@@ -25,7 +25,7 @@ namespace MESSAGES
         return true;
     }
 
-    void DisconnectFromNet_Msg::FillHeader(std::string senderIP)
+    void DisconnectFromNet_Msg::FillHeader(const std::string senderIP)
     {
         header.SetCurrentTime();
         header.SetMessageId(MSG_ID);

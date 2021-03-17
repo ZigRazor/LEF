@@ -1,19 +1,20 @@
 #include "Receiver_Thread.hpp"
 #include "shared/SharedData.hpp"
 #include "msg/MessageFactory.hpp"
-#include <unistd.h>
 
 namespace RECEIVER
 {
     Receiver_Thread::Receiver_Thread(std::string addr, unsigned int port, struct timeval tv)
     {
-        exit = false;
         //Setup Customer
-        std::cout << "Receiver Thread connetion IP " << addr << ":" << port << std::endl;
+        LOG( L_DEBUG, "Receiver Thread connetion IP " << addr << ":" << port);
         this->address = addr;
         this->portNumber = port;
-        customer.init(addr, port);
-        customer.connect();
+        int result = 0;
+        result = customer.init(addr, port);
+        LOG( L_DEBUG, "Init Result = " << result);
+        result = customer.connect();
+        LOG( L_DEBUG, "Connect Result = " << result);
 
         customer.setTimeoutOnReceive(tv);
     }
@@ -21,6 +22,7 @@ namespace RECEIVER
     Receiver_Thread::~Receiver_Thread()
     {
         customer.disconnect();
+        CLOSE_LOGGER();
     }
 
     void Receiver_Thread::Run()
@@ -38,26 +40,26 @@ namespace RECEIVER
                 {
                     if (message->GetHeader().GetReceiverIP_s() != address || message->GetHeader().GetReceiverPort() != portNumber)
                     {
-                        std::cerr << "Intecepted Wrong Message" << std::endl;
+                        LOG( L_ERROR, "Intecepted Wrong Message");
                     }
                     else
                     {
                         SHARED::SharedData::PushMessageQueue(message);
                         SHARED::SharedData::CVNotifyAll(SHARED::SharedData::GetMessageQueue_CV());
-                        std::cout << "Enqueue message" << std::endl;
+                        LOG( L_DEBUG, "Enqueue message");
                     }
                 }
                 else
                 {
                     //Discard Message (NOT VALID)
-                    std::cerr << "Discard Message (NOT VALID)" << std::endl;
+                    LOG( L_ERROR, "Discard Message (NOT VALID)");
                 }
             }
             else
             {
                 //ERROR in receive to log
-                std::cerr << "No message received" << std::endl;
-                //usleep(1000000);
+                LOG( L_ERROR, "No message received reason: " << bytesReceived);
+                usleep(1000000);
             }
             delete[] buffer;
             buffer = nullptr;

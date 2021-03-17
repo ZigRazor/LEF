@@ -17,7 +17,7 @@ namespace MESSAGES
 
 		bool SerializeToOstream(std::ostream* output) const;
 		bool ParseFromIstream(std::istream* input);	
-		void FillHeader(std::string senderIP);
+		void FillHeader(const std::string senderIP);
 
 	};
 }

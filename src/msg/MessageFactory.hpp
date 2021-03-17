@@ -2,6 +2,7 @@
 #define MESSAGEFACTORY_H
 #pragma once
 
+#include "logger/logger.hpp"
 #include "BaseMessage.hpp"
 
 namespace MESSAGES

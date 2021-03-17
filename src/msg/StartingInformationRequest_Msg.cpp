@@ -1,42 +1,46 @@
-#include "LeaderAlive_Msg.hpp"
+#include "StartingInformationRequest_Msg.hpp"
 #include "channel/ChannelDefinition.hpp"
 
 namespace MESSAGES
 {
-    
-    LeaderAlive_Msg::LeaderAlive_Msg()
+    StartingInformationRequest_Msg::StartingInformationRequest_Msg()
     {
-        MSG_CHANNEL = "Leader_Channel";
+        MSG_CHANNEL = "InfoExchange_Channel";
     }
 
-    LeaderAlive_Msg::~LeaderAlive_Msg()
+    StartingInformationRequest_Msg::~StartingInformationRequest_Msg()
     {
     }
 
-    bool LeaderAlive_Msg::SerializeToOstream(std::ostream* output) const
+    bool StartingInformationRequest_Msg::SerializeToOstream(std::ostream *output) const
     {
         header.SerializeToOstream(output);
         return true;
     }
 
-	bool LeaderAlive_Msg::ParseFromIstream(std::istream* input)
+    bool StartingInformationRequest_Msg::ParseFromIstream(std::istream *input)
     {
         header.ParseFromIstream(input);
         return true;
     }
 
-    void LeaderAlive_Msg::FillHeader(const std::string senderIP)
+    void StartingInformationRequest_Msg::FillHeader(const std::string senderIP)
     {
         header.SetCurrentTime();
         header.SetMessageId(MSG_ID);
         header.SetSenderIP_s(senderIP); //To Set Sender IP
-        if(CHANNEL::ChannelDefinition::getChannelByName(MSG_CHANNEL)){
+        if (CHANNEL::ChannelDefinition::getChannelByName(MSG_CHANNEL))
+        {
             header.SetReceiverIP_s(CHANNEL::ChannelDefinition::getChannelByName(MSG_CHANNEL)->GetIP());
             header.SetReceiverPort(CHANNEL::ChannelDefinition::getChannelByName(MSG_CHANNEL)->GetPort());
-        }else{
+        }
+        else
+        {
             //ERROR
         }
         header.SetDataSize(0);
     }
+
+    
 
 }

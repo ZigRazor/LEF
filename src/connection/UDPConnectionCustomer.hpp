@@ -8,6 +8,8 @@
 #include <arpa/inet.h>
 #include <netinet/in.h>
 
+#include "logger/logger.hpp"
+
 #define MAXMSGSIZE 65000
 
 namespace CONNECTION

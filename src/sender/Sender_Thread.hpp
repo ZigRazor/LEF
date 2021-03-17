@@ -1,7 +1,7 @@
 #ifndef SENDER_THREAD_H
 #define SENDER_THREAD_H
 #pragma once
-
+#include "logger/logger.hpp"
 #include "connection/UDPConnectionCustomer.hpp"
 
 namespace SENDER
@@ -11,6 +11,7 @@ namespace SENDER
 	private:
 		CONNECTION::UDPConnectionCustomer customer;
 		bool exit;
+		LOGGER_T *log;
 
 	public:
 		Sender_Thread(std::string addr, unsigned int port, struct timeval tv = {1, 0});

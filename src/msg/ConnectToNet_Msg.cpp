@@ -24,7 +24,7 @@ namespace MESSAGES
         return true;
     }
 
-    void ConnectToNet_Msg::FillHeader(std::string senderIP)
+    void ConnectToNet_Msg::FillHeader(const std::string senderIP)
     {
         header.SetCurrentTime();
         header.SetMessageId(MSG_ID);

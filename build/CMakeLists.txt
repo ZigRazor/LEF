@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.13)  # CMake version check
 project(LEF)               # Create project "simple_example"
-set(CMAKE_CXX_STANDARD 14)            # Enable c++14 standard
+set(CMAKE_CXX_STANDARD 17)            # Enable c++17 standard
 
 set (CMAKE_RUNTIME_OUTPUT_DIRECTORY bin)
 
@@ -25,11 +25,15 @@ set(SOURCE_FILES  ${CONNECTION_DIR}/UDPConnectionCustomer.cpp
                     ${MSG_DIR}/LeaderAlive_Msg.cpp
                     ${MSG_DIR}/BaseMessage.cpp
                     ${MSG_DIR}/MessageFactory.cpp
+                    ${MSG_DIR}/StartingInformation_Msg.cpp
+                    ${MSG_DIR}/StartingInformationRequest_Msg.cpp
                     ${SHARED_DIR}/SharedData.cpp
+                    ${SHARED_DIR}/ConfigData.cpp
                     ${RECEIVER_DIR}/Receiver_Thread.cpp
                     ${DISPATCHER_DIR}/Dispatcher_Thread.cpp
                     ${HANDLER_DIR}/ConnectDisconnectMsg_Handler.cpp
                     ${HANDLER_DIR}/LeaderAliveMsg_Handler.cpp
+                    ${HANDLER_DIR}/StartingDataRequestMsg_Handler.cpp
                     ${CHANNEL_DIR}/Channel.cpp
                     ${CHANNEL_DIR}/ChannelDefinition.cpp
                     ${SENDER_DIR}/Sender_Thread.cpp
@@ -41,15 +45,19 @@ set(SOURCE_FILES  ${CONNECTION_DIR}/UDPConnectionCustomer.cpp
 add_executable(main_example ${MAIN_DIR}/main.cpp ${SOURCE_FILES})
 
 target_include_directories(main_example PUBLIC ${SRC_DIR})
-target_link_libraries(main_example PUBLIC pthread)
+find_package (Threads REQUIRED)
+
+target_link_libraries(main_example  ${CMAKE_THREAD_LIBS_INIT})
 
 ################################### TESTS #####################################
 
 set (TEST_DIR ${ROOT_DIR}/test)
 add_executable(sender ${TEST_DIR}/send_receive/sender.cpp ${SOURCE_FILES})
 target_include_directories(sender PUBLIC ${SRC_DIR})
+target_link_libraries(sender  ${CMAKE_THREAD_LIBS_INIT})
 add_executable(receiver ${TEST_DIR}/send_receive/receiver.cpp ${SOURCE_FILES})
 target_include_directories(receiver PUBLIC ${SRC_DIR})
+target_link_libraries(receiver  ${CMAKE_THREAD_LIBS_INIT})
 
 
 ###############################################################################

@@ -33,4 +33,8 @@ namespace MESSAGES
         return header.ParseFromIstream(input);
     }
 
+    unsigned int BaseMessage::calculateDataSize() const{
+        return 0;
+    }
+
 }

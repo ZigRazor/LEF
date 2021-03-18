@@ -60,6 +60,8 @@ int main(int argc, char *argv[])
             INIT_LOGGER(ss_.str());
             receiver_LeaderChannel = new RECEIVER::Receiver_Thread(CHANNEL::ChannelDefinition::getChannelByName("Leader_Channel")->GetIP(), CHANNEL::ChannelDefinition::getChannelByName("Leader_Channel")->GetPort(), tv);
             receiver_LeaderChannel->Run();
+            delete receiver_LeaderChannel;
+            receiver_LeaderChannel = nullptr;
         });
 
         RECEIVER::Receiver_Thread *receiver_ConnDisc_Channel;
@@ -73,6 +75,8 @@ int main(int argc, char *argv[])
             INIT_LOGGER(ss_.str());
             receiver_ConnDisc_Channel = new RECEIVER::Receiver_Thread(CHANNEL::ChannelDefinition::getChannelByName("ConnDisc_Channel")->GetIP(), CHANNEL::ChannelDefinition::getChannelByName("ConnDisc_Channel")->GetPort(), tv);
             receiver_ConnDisc_Channel->Run();
+            delete receiver_ConnDisc_Channel;
+            receiver_ConnDisc_Channel = nullptr;
         });
 
         RECEIVER::Receiver_Thread *receiver_InfoExchange_Channel;
@@ -86,6 +90,8 @@ int main(int argc, char *argv[])
             INIT_LOGGER(ss_.str());
             receiver_InfoExchange_Channel = new RECEIVER::Receiver_Thread(CHANNEL::ChannelDefinition::getChannelByName("InfoExchange_Channel")->GetIP(), CHANNEL::ChannelDefinition::getChannelByName("InfoExchange_Channel")->GetPort(), tv);
             receiver_InfoExchange_Channel->Run();
+            delete receiver_InfoExchange_Channel;
+            receiver_InfoExchange_Channel = nullptr;
         });
 
         DISPATCHER::Dispatcher_Thread *dispatcher;
@@ -96,6 +102,8 @@ int main(int argc, char *argv[])
             INIT_LOGGER(ss_.str());
             dispatcher = new DISPATCHER::Dispatcher_Thread();
             dispatcher->Run();
+            delete dispatcher;
+            dispatcher = nullptr;
         });
 
         SENDER::Sender_Thread *sender;
@@ -109,6 +117,8 @@ int main(int argc, char *argv[])
             INIT_LOGGER(ss_.str());
             sender = new SENDER::Sender_Thread(ip, port - 1, tv);
             sender->Run();
+            delete sender;
+            sender = nullptr;
         });
 
         MAIN::Main_Thread *main;
@@ -119,6 +129,8 @@ int main(int argc, char *argv[])
             INIT_LOGGER(ss_.str());
             main = new MAIN::Main_Thread();
             main->Run();
+            delete main;
+            main = nullptr;
         });
 
         //Exit Procedure

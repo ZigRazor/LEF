@@ -8,6 +8,8 @@
 #include <mutex>
 #include <iostream>
 
+#define LOG_ENABLED 0
+
 namespace LOGGER
 {
     enum log_level
@@ -41,61 +43,81 @@ namespace LOGGER
     public:
         static std::ofstream *getInstance(pid_t tid, std::string filename = "")
         {
+
             std::ofstream *ofs = nullptr;
-            if (loggerMap.find(tid) != loggerMap.end())
+            if (LOG_ENABLED)
             {
-                ofs = loggerMap.find(tid)->second;
-            }
-            else
-            {
-                std::ostringstream ss_;
-                ss_ << filename << "_" << tid << ".log";
-                std::ofstream *_log;
-                _log = new std::ofstream(ss_.str().c_str(), std::ios_base::out | std::ios_base::app);
-                loggerMap[tid] = _log;
-                std::mutex *_mutex = new std::mutex();
-                mutexMap[_log] = _mutex;
-                ofs = _log;
+                if (loggerMap.find(tid) != loggerMap.end())
+                {
+                    ofs = loggerMap.find(tid)->second;
+                }
+                else
+                {
+                    std::ostringstream ss_;
+                    ss_ << filename << "_" << tid << ".log";
+                    std::ofstream *_log;
+                    _log = new std::ofstream(ss_.str().c_str(), std::ios_base::out | std::ios_base::app);
+                    loggerMap[tid] = _log;
+                    std::mutex *_mutex = new std::mutex();
+                    mutexMap[_log] = _mutex;
+                    ofs = _log;
+                }
             }
             return ofs;
         }
 
         static void log_lock(pid_t tid)
         {
-            std::ofstream *ofs = nullptr;
-            if (loggerMap.find(tid) != loggerMap.end())
+            if (LOG_ENABLED)
             {
-                ofs = loggerMap.find(tid)->second;
-                mutexMap.find(ofs)->second->lock();
+                std::ofstream *ofs = nullptr;
+                if (loggerMap.find(tid) != loggerMap.end())
+                {
+                    ofs = loggerMap.find(tid)->second;
+                    mutexMap.find(ofs)->second->lock();
+                }
             }
         }
 
         static void log_unlock(pid_t tid)
         {
-            std::ofstream *ofs = nullptr;
-            if (loggerMap.find(tid) != loggerMap.end())
+            if (LOG_ENABLED)
             {
-                ofs = loggerMap.find(tid)->second;
-                mutexMap.find(ofs)->second->unlock();
+                std::ofstream *ofs = nullptr;
+                if (loggerMap.find(tid) != loggerMap.end())
+                {
+                    ofs = loggerMap.find(tid)->second;
+                    mutexMap.find(ofs)->second->unlock();
+                }
             }
         }
 
         static void close_log(pid_t tid)
         {
-            if (loggerMap.find(tid) != loggerMap.end())
+            if (LOG_ENABLED)
             {
-                mutexMap.erase(mutexMap.find(loggerMap.find(tid)->second));
-                loggerMap.erase(loggerMap.find(tid));
+                if (loggerMap.find(tid) != loggerMap.end())
+                {
+                    mutexMap.erase(mutexMap.find(loggerMap.find(tid)->second));
+                    loggerMap.erase(loggerMap.find(tid));
+                }
             }
         }
 
         static void log(pid_t tid, log_level lvl, std::string msg)
         {
-            std::ofstream *ofs = nullptr;
-            if (loggerMap.find(tid) != loggerMap.end())
+            if (LOG_ENABLED)
             {
-                ofs = loggerMap.find(tid)->second;
-                *ofs << lvl << " - " << msg << std::endl;
+                std::ofstream *ofs = nullptr;
+                if (loggerMap.find(tid) != loggerMap.end())
+                {
+                    ofs = loggerMap.find(tid)->second;
+                    *ofs << lvl << " - " << msg << std::endl;
+                }
+            }
+            else
+            {
+                std::cout << lvl << " - " << msg << std::endl;
             }
         }
 
@@ -121,14 +143,16 @@ namespace LOGGER
 #define L_ERROR LOGGER::ERROR
 #define L_FATAL LOGGER::FATAL
 
-#define LOG(_lvl, x)                                                                                          \
-    {                                                                                                         \
-        time_t now = time(0);                                                                                 \
-        LOGGER::logger::log_lock(gettid());                                                                   \
-        std::stringstream ss;                                                                                 \
-        ss << std::put_time(gmtime(&now), "%Y-%m-%d %H:%M:%S") << " - " << __PRETTY_FUNCTION__ << " - " << x; \
-        LOGGER::logger::log(gettid(), _lvl, ss.str());                                                        \
-        LOGGER::logger::log_unlock(gettid());                                                                 \
+#define LOG(_lvl, x)                                                                                   \
+    {                                                                                                  \
+        time_t now = time(0);                                                                          \
+        struct tm _now;                                                                                \
+        LOGGER::logger::log_lock(gettid());                                                            \
+        std::stringstream ss;                                                                          \
+        gmtime_r(&now, &_now);                                                                           \
+        ss << std::put_time(&_now, "%Y-%m-%d %H:%M:%S") << " - " << __PRETTY_FUNCTION__ << " - " << x; \
+        LOGGER::logger::log(gettid(), _lvl, ss.str());                                                 \
+        LOGGER::logger::log_unlock(gettid());                                                          \
     }
 
 #endif // __LOGGER_H__

@@ -28,6 +28,7 @@ namespace DISPATCHER
         {
             if (SHARED::SharedData::isMessageQueueEmpty())
             {
+                LOG (L_TRACE, "Message Queue Empty");
                 SHARED::SharedData::CVWait(SHARED::SharedData::GetMessageQueue_CV(), SHARED::SharedData::GetMessageQueue_Mutex());
             }
             else

@@ -1,14 +1,18 @@
 #ifndef MAIN_THREAD_H
 #define MAIN_THREAD_H
 #pragma once
-	
-namespace MAIN{
-class Main_Thread  
+
+#include "logger/logger.hpp"
+
+namespace MAIN
 {
+	class Main_Thread
+	{
 	private:
 		bool exit;
-	public:
+		LOGGER_T *log;
 
+	public:
 		Main_Thread();
 		~Main_Thread();
 
@@ -16,7 +20,6 @@ class Main_Thread
 
 		void SetExit(bool exit);
 		bool GetExit() const;
-
-};
+	};
 }
 #endif

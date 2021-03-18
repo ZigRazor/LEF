@@ -3,8 +3,10 @@
 #include "msg/ConnectToNet_Msg.hpp"
 #include "msg/DisconnectFromNet_Msg.hpp"
 #include "msg/LeaderAlive_Msg.hpp"
+#include "msg/StartingInformationRequest_Msg.hpp"
 #include "handler/ConnectDisconnectMsg_Handler.hpp"
 #include "handler/LeaderAliveMsg_Handler.hpp"
+#include "handler/StartingDataRequestMsg_Handler.hpp"
 
 #include <unistd.h>
 
@@ -26,6 +28,7 @@ namespace DISPATCHER
         {
             if (SHARED::SharedData::isMessageQueueEmpty())
             {
+                LOG (L_TRACE, "Message Queue Empty");
                 SHARED::SharedData::CVWait(SHARED::SharedData::GetMessageQueue_CV(), SHARED::SharedData::GetMessageQueue_Mutex());
             }
             else
@@ -35,26 +38,32 @@ namespace DISPATCHER
                 {
                 case MESSAGES::ConnectToNet_Msg::MSG_ID:
                 {
-                    std::cout << "Handle ConnectToNet_Msg Message" << std::endl;
-                    HANDLER::ConnectDisconnectMsg_Handler::handleConnectToNetMsg(dynamic_cast<MESSAGES::ConnectToNet_Msg *>(message));                    
+                    LOG( L_DEBUG, "Handle ConnectToNet_Msg Message");
+                    HANDLER::ConnectDisconnectMsg_Handler::handleConnectToNetMsg(dynamic_cast<MESSAGES::ConnectToNet_Msg *>(message));
                 }
                 break;
                 case MESSAGES::DisconnectFromNet_Msg::MSG_ID:
                 {
-                    std::cout << "Handle DisconnectFromNet_Msg Message" << std::endl;
+                    LOG( L_DEBUG, "Handle DisconnectFromNet_Msg Message");
                     HANDLER::ConnectDisconnectMsg_Handler::handleDisconnectFromNetMsg(dynamic_cast<MESSAGES::DisconnectFromNet_Msg *>(message));
                 }
                 break;
                 case MESSAGES::LeaderAlive_Msg::MSG_ID:
                 {
-                    std::cout << "Handle LeaderAlive_Msg Message" << std::endl;
+                    LOG( L_DEBUG, "Handle LeaderAlive_Msg Message");
                     HANDLER::LeaderAliveMsg_Handler::handlerLeaderAliveMsg(dynamic_cast<MESSAGES::LeaderAlive_Msg *>(message));
+                }
+                break;
+                case MESSAGES::StartingInformationRequest_Msg::MSG_ID:
+                {
+                    LOG( L_DEBUG, "Handle StartingInformationRequest_Msg Message");
+                    HANDLER::StartingDataRequestMsg_Handler::handlerStartingInformationRequestMsg(dynamic_cast<MESSAGES::StartingInformationRequest_Msg *>(message));
                 }
                 break;
                 default:
                 {
                     //Unknown Handler For message
-                    std::cerr << "Unknown Handler with ID : " << message->GetHeader().GetMessageId() << std::endl;
+                    LOG( L_ERROR, "Unknown Handler with ID : " << message->GetHeader().GetMessageId());
                     if (message)
                     { // clean
                         delete message;

@@ -12,6 +12,8 @@ namespace MESSAGES
     protected:
         MessageHeader header;
         std::string MSG_CHANNEL;
+
+        virtual unsigned int calculateDataSize() const;
     public:        
 
         BaseMessage() = default;

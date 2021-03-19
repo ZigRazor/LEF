@@ -117,7 +117,7 @@ namespace LOGGER
             }
             else
             {
-                std::cout << lvl << " - " << msg << std::endl;
+                std::cout << lvl << " - " << "( " << tid << " ) - " << msg << std::endl;
             }
         }
 

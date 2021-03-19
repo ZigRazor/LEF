@@ -51,6 +51,7 @@ int main(int argc, char *argv[])
 
         RECEIVER::Receiver_Thread *receiver_LeaderChannel;
         std::thread receiver_LeaderChannel_thread([&]() {
+            std::cout << "Starting receiver_LeaderChannel_thread" << std::endl;
             struct timeval tv;
             tv.tv_sec = 10;
             tv.tv_usec = 0;
@@ -62,10 +63,14 @@ int main(int argc, char *argv[])
             receiver_LeaderChannel->Run();
             delete receiver_LeaderChannel;
             receiver_LeaderChannel = nullptr;
+            std::cerr << "receiver_LeaderChannel_thread exited" << std::endl;
         });
+
+        pthread_setname_np(receiver_LeaderChannel_thread.native_handle(), "receiver_LC");
 
         RECEIVER::Receiver_Thread *receiver_ConnDisc_Channel;
         std::thread receiver_ConnDisc_Channel_thread([&]() {
+            std::cout << "Starting receiver_ConnDisc_Channel_thread" << std::endl;
             struct timeval tv;
             tv.tv_sec = 10;
             tv.tv_usec = 0;
@@ -77,10 +82,14 @@ int main(int argc, char *argv[])
             receiver_ConnDisc_Channel->Run();
             delete receiver_ConnDisc_Channel;
             receiver_ConnDisc_Channel = nullptr;
+            std::cerr << "receiver_ConnDisc_Channel_thread exited" << std::endl;
         });
+
+        pthread_setname_np(receiver_ConnDisc_Channel_thread.native_handle(), "receiver_CC");
 
         RECEIVER::Receiver_Thread *receiver_InfoExchange_Channel;
         std::thread receiver_InfoExchange_Channel_thread([&]() {
+            std::cout << "Starting receiver_InfoExchange_Channel_thread" << std::endl;
             struct timeval tv;
             tv.tv_sec = 10;
             tv.tv_usec = 0;
@@ -92,10 +101,14 @@ int main(int argc, char *argv[])
             receiver_InfoExchange_Channel->Run();
             delete receiver_InfoExchange_Channel;
             receiver_InfoExchange_Channel = nullptr;
+            std::cerr << "receiver_InfoExchange_Channel_thread exited" << std::endl;
         });
+
+        pthread_setname_np(receiver_InfoExchange_Channel_thread.native_handle(), "receiver_IC");
 
         DISPATCHER::Dispatcher_Thread *dispatcher;
         std::thread dispatcher_thread([&]() {
+            std::cout << "Starting dispatcher_thread" << std::endl;
             //setup Logger
             std::ostringstream ss_;
             ss_ << "Dispatcher";
@@ -104,10 +117,14 @@ int main(int argc, char *argv[])
             dispatcher->Run();
             delete dispatcher;
             dispatcher = nullptr;
+            std::cerr << "Dispatcher_Thread exited" << std::endl;
         });
+
+        pthread_setname_np(dispatcher_thread.native_handle(), "dispatcher");
 
         SENDER::Sender_Thread *sender;
         std::thread sender_thread([&]() {
+            std::cout << "Starting sender_thread" << std::endl;
             struct timeval tv;
             tv.tv_sec = 10;
             tv.tv_usec = 0;
@@ -119,10 +136,14 @@ int main(int argc, char *argv[])
             sender->Run();
             delete sender;
             sender = nullptr;
+            std::cerr << "sender_thread exited" << std::endl;
         });
+
+        pthread_setname_np(sender_thread.native_handle(), "sender");
 
         MAIN::Main_Thread *main;
         std::thread main_thread([&]() {
+            std::cout << "Starting main_thread" << std::endl;
             //setup Logger
             std::ostringstream ss_;
             ss_ << "Main_Thread";
@@ -131,15 +152,33 @@ int main(int argc, char *argv[])
             main->Run();
             delete main;
             main = nullptr;
+            std::cerr << "main_thread exited" << std::endl;
         });
 
+        pthread_setname_np(main_thread.native_handle(), "main");
+
+        while ( main_thread.joinable() 
+                && sender_thread.joinable()
+                && dispatcher_thread.joinable()
+                && receiver_InfoExchange_Channel_thread.joinable()
+                && receiver_ConnDisc_Channel_thread.joinable()
+                && receiver_LeaderChannel_thread.joinable()
+        ){
+            sleep(5);
+        }
+
+        std::cerr << "Not all thread running, exit" << std::endl;
+        return -100;
+
+        /*
         //Exit Procedure
         std::string close_command = "";
         while (close_command != "close")
         {
             std::cout << "Type \"close\"  to quit execution " << std::endl;
             std::cin >> close_command;
-        }
+        } 
+        */       
 
         dispatcher->SetExit(true);
         receiver_LeaderChannel->SetExit(true);

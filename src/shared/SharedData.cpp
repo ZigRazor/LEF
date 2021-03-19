@@ -1,6 +1,8 @@
 #include "SharedData.hpp"
 #include <algorithm>
 #include <chrono>
+#include "logger/logger.hpp"
+
 using namespace std::chrono_literals;
 namespace SHARED
 {
@@ -32,8 +34,10 @@ namespace SHARED
     int SharedData::GetMasterIP()
     {
         m_masterIP.lock();
+        LOG(L_TRACE, "Get Master IP locked");
         int _masterIP = masterIP;
         m_masterIP.unlock();
+        LOG(L_TRACE, "Get Master IP unlocked");
         return _masterIP;
     }
 
@@ -62,8 +66,11 @@ namespace SHARED
     std::set<int> SharedData::GetNetworkIPs()
     {
         m_networkIPs.lock();
-        return networkIPs;
+        std::set<int> _networkIPs = networkIPs;
+        LOG(L_TRACE, "GetNetworkIPs locked");        
         m_networkIPs.unlock();
+        LOG(L_TRACE, "GetNetworkIPs unlocked");   
+        return _networkIPs;
     }
 
     void SharedData::SetNetworkIPs(std::set<int> _networkIPs)

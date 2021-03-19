@@ -7,7 +7,7 @@ namespace CHANNEL
     void ChannelDefinition::addChannelToMap(std::string channelName, std::string ip, unsigned int port){
         channelMap[channelName] = new Channel(ip, port);
     }
-    const Channel* const ChannelDefinition::getChannelByName(std::string channelName){
+    const Channel* ChannelDefinition::getChannelByName(std::string channelName){
         if (channelMap.find(channelName) != channelMap.end()){
             return channelMap.at(channelName);
         }

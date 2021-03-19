@@ -15,7 +15,7 @@ namespace CHANNEL
             ChannelDefinition() = delete;
             ~ChannelDefinition() = delete;
             static void addChannelToMap(std::string channelName, std::string ip, unsigned int port);
-            static const Channel* const getChannelByName(std::string channelName);
+            static const Channel* getChannelByName(std::string channelName);
     };
 }
 

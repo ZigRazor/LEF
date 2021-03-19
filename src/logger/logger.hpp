@@ -9,16 +9,24 @@
 #include <iostream>
 
 #define LOG_ENABLED 0
+/*
+    TRACE = 0
+    DEBUG = 1
+    INFO = 2
+    ERROR = 3
+    FATAL = 4
+*/
+#define LOG_LEVEL 1
 
 namespace LOGGER
 {
     enum log_level
     {
-        TRACE,
-        DEBUG,
-        INFO,
-        ERROR,
-        FATAL
+        TRACE = 0,
+        DEBUG = 1,
+        INFO = 2,
+        ERROR = 3,
+        FATAL = 4
     };
 
     inline std::ostream &operator<<(std::ostream &out, const log_level &value)
@@ -117,7 +125,8 @@ namespace LOGGER
             }
             else
             {
-                std::cout << lvl << " - " << msg << std::endl;
+                std::cout << lvl << " - "
+                          << "( " << tid << " ) - " << msg << std::endl;
             }
         }
 
@@ -143,16 +152,20 @@ namespace LOGGER
 #define L_ERROR LOGGER::ERROR
 #define L_FATAL LOGGER::FATAL
 
-#define LOG(_lvl, x)                                                                                   \
-    {                                                                                                  \
-        time_t now = time(0);                                                                          \
-        struct tm _now;                                                                                \
-        LOGGER::logger::log_lock(gettid());                                                            \
-        std::stringstream ss;                                                                          \
-        gmtime_r(&now, &_now);                                                                           \
-        ss << std::put_time(&_now, "%Y-%m-%d %H:%M:%S") << " - " << __PRETTY_FUNCTION__ << " - " << x; \
-        LOGGER::logger::log(gettid(), _lvl, ss.str());                                                 \
-        LOGGER::logger::log_unlock(gettid());                                                          \
+
+#define LOG(_lvl, x)                                                                                       \
+    {                                                                                                      \
+        if (_lvl >= LOG_LEVEL)                                                                              \
+        {                                                                                                  \
+            time_t now = time(0);                                                                          \
+            struct tm _now;                                                                                \
+            LOGGER::logger::log_lock(gettid());                                                            \
+            std::stringstream ss;                                                                          \
+            gmtime_r(&now, &_now);                                                                         \
+            ss << std::put_time(&_now, "%Y-%m-%d %H:%M:%S") << " - " << __PRETTY_FUNCTION__ << " - " << x; \
+            LOGGER::logger::log(gettid(), _lvl, ss.str());                                                 \
+            LOGGER::logger::log_unlock(gettid());                                                          \
+        }                                                                                                  \
     }
 
 #endif // __LOGGER_H__

@@ -152,6 +152,7 @@ namespace LOGGER
 #define L_ERROR LOGGER::ERROR
 #define L_FATAL LOGGER::FATAL
 
+
 #define LOG(_lvl, x)                                                                                       \
     {                                                                                                      \
         if (_lvl >= LOG_LEVEL)                                                                              \

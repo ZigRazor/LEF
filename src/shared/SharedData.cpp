@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <chrono>
 #include "logger/logger.hpp"
+
 using namespace std::chrono_literals;
 namespace SHARED
 {

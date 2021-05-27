@@ -7,6 +7,7 @@ A Leader Election Framework
 ## Requirements
 The minimun C++ standard required is **C++14** and a G++ compiler version greater than 7.3.0.
 ( The build are tested with G++ 9.x.x )
+**lib-zmq** is needed, to install it use the official [guide](https://zeromq.org/download/), (for Ubuntu just use ` sudo apt-get install libzmq3-dev `)
 
 #### How to Compile
 -   Enter the `build` directory

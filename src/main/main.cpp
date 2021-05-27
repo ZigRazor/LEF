@@ -44,9 +44,9 @@ int main(int argc, char *argv[])
         //CHANNEL::ChannelDefinition::addChannelToMap("InfoExchange_Channel", "172.17.255.255", 4003);
         //CHANNEL::ChannelDefinition::addChannelToMap("ConnDisc_Channel", "172.17.255.255", 4002);
         //CHANNEL::ChannelDefinition::addChannelToMap("Leader_Channel", "172.17.255.255", 4001);
-        CHANNEL::ChannelDefinition::addChannelToMap("InfoExchange_Channel", "224.0.0.150", 4003);
-        CHANNEL::ChannelDefinition::addChannelToMap("ConnDisc_Channel", "224.0.0.150", 4002);
-        CHANNEL::ChannelDefinition::addChannelToMap("Leader_Channel", "224.0.0.150", 4001);
+        CHANNEL::ChannelDefinition::addChannelToMap("InfoExchange_Channel",CHANNEL::Channel::E_CommunicationType::UDP, "224.0.0.150", 4003);
+        CHANNEL::ChannelDefinition::addChannelToMap("ConnDisc_Channel",CHANNEL::Channel::E_CommunicationType::UDP, "224.0.0.150", 4002);
+        CHANNEL::ChannelDefinition::addChannelToMap("Leader_Channel",CHANNEL::Channel::E_CommunicationType::UDP, "224.0.0.150", 4001);
         ////////////////////
 
         RECEIVER::Receiver_Thread *receiver_LeaderChannel;

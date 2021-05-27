@@ -7,15 +7,15 @@
 namespace CHANNEL
 {
     class ChannelDefinition
-	{
-        private: 
-            static std::map <std::string, Channel*> channelMap;
-        public:
-            
-            ChannelDefinition() = delete;
-            ~ChannelDefinition() = delete;
-            static void addChannelToMap(std::string channelName, std::string ip, unsigned int port);
-            static const Channel* getChannelByName(std::string channelName);
+    {
+    private:
+        static std::map<std::string, Channel *> channelMap;
+
+    public:
+        ChannelDefinition() = delete;
+        ~ChannelDefinition() = delete;
+        static void addChannelToMap(std::string channelName, Channel::E_CommunicationType communicationType, std::string ip, unsigned int port);
+        static const Channel *getChannelByName(std::string channelName);
     };
 }
 

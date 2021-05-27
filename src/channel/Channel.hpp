@@ -7,14 +7,24 @@ namespace CHANNEL
 {
 	class Channel
 	{
+	public:
+		typedef enum CommunicationType_Enumeration
+		{
+			INPROC,
+			UDP,
+			TCP
+		} E_CommunicationType;
+
+		Channel(E_CommunicationType communicationType, std::string IP, unsigned int port);
+		~Channel();
+		E_CommunicationType GetCommunicationType() const;
+		std::string GetIP() const;
+		unsigned int GetPort() const;
+
 	private:
+		E_CommunicationType communicationType;
 		std::string IP;
 		unsigned int port;
-	public:
-		Channel(std::string IP, unsigned int port);
-		~Channel();
-		std::string GetIP() const ;
-		unsigned int  GetPort() const ;
 	};
 }
 #endif

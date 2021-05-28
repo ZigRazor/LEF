@@ -15,13 +15,15 @@ namespace CHANNEL
 			TCP
 		} E_CommunicationType;
 
-		Channel(E_CommunicationType communicationType, std::string IP, unsigned int port);
+		Channel(const std::string& channelName, E_CommunicationType communicationType, const std::string& IP, unsigned int port);
 		~Channel();
+		const std::string& GetChannelName() const;
 		E_CommunicationType GetCommunicationType() const;
 		std::string GetIP() const;
 		unsigned int GetPort() const;
 
 	private:
+		std::string channelName;
 		E_CommunicationType communicationType;
 		std::string IP;
 		unsigned int port;

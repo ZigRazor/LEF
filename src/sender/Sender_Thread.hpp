@@ -2,19 +2,21 @@
 #define SENDER_THREAD_H
 #pragma once
 #include "logger/logger.hpp"
-#include "connection/UDPConnectionCustomer.hpp"
+#include "connection/ConnectionCustomer.hpp"
+#include "channel/Channel.hpp"
+#include "channel/ChannelDefinition.hpp"
 
 namespace SENDER
 {
 	class Sender_Thread
 	{
 	private:
-		CONNECTION::UDPConnectionCustomer customer;
+		CONNECTION::ConnectionCustomer customer;
 		bool exit;
 		LOGGER_T *log;
 
 	public:
-		Sender_Thread(std::string addr, unsigned int port, struct timeval tv = {1, 0});
+		Sender_Thread(const CHANNEL::Channel &channel, struct timeval tv = {1, 0});
 		~Sender_Thread();
 
 		void Run();

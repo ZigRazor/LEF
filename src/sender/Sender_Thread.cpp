@@ -4,12 +4,13 @@
 
 namespace SENDER
 {
-    Sender_Thread::Sender_Thread(std::string addr, unsigned int port, struct timeval tv)
+    Sender_Thread::Sender_Thread(const CHANNEL::Channel &channel, struct timeval tv)
     {
         exit = false;
         
         //Setup Customer
-        LOG( L_DEBUG, "Sender Thread connetion IP " << addr << ":" << port);
+        LOG( L_DEBUG, "Sender Thread connetion IP " << channel.GetIP() << ":" << channel.GetPort());
+        /*
         if (customer.init(addr, port) == 0)
         {
             if (customer.connect() == 0)
@@ -29,6 +30,8 @@ namespace SENDER
             LOG( L_ERROR, "Error in Init Socket");
             exit = true;
         }
+        */
+       customer.connect(channel,CONNECTION::ConnectionCustomer::E_ConnectionMode::SEND);
     }
 
     Sender_Thread::~Sender_Thread()
@@ -53,7 +56,7 @@ namespace SENDER
                 std::ostringstream output;
                 message->SerializeToOstream(&output);
                 LOG( L_DEBUG, message->GetHeader().GetReceiverIP_s());
-                int byte_sent = customer.sendMessage(output.str().c_str(), output.str().size(), message->GetHeader().GetReceiverIP_s(), message->GetHeader().GetReceiverPort());
+                int byte_sent = customer.sendMessage(output.str().c_str(), output.str().size(), *CHANNEL::ChannelDefinition::getChannelByAddress(message->GetHeader().GetReceiverIP_s(), message->GetHeader().GetReceiverPort()));
                 LOG( L_DEBUG, "Message Sent of " << byte_sent << " Bytes");
                 //clean
                 if (message)

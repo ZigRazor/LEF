@@ -4,19 +4,16 @@
 
 namespace RECEIVER
 {
-    Receiver_Thread::Receiver_Thread(std::string addr, unsigned int port, struct timeval tv)
+    Receiver_Thread::Receiver_Thread(const CHANNEL::Channel &channel, struct timeval tv)
     {
         //Setup Customer
-        LOG( L_DEBUG, "Receiver Thread connetion IP " << addr << ":" << port);
-        this->address = addr;
-        this->portNumber = port;
+        LOG( L_DEBUG, "Receiver Thread connetion IP " << channel.GetIP() << ":" << channel.GetPort());
+        this->address = channel.GetIP();
+        this->portNumber = channel.GetPort();
         int result = 0;
-        result = customer.init(addr, port);
-        LOG( L_DEBUG, "Init Result = " << result);
-        result = customer.connect();
-        LOG( L_DEBUG, "Connect Result = " << result);
-
-        customer.setTimeoutOnReceive(tv);
+        result = customer.connect(channel,CONNECTION::ConnectionCustomer::E_ConnectionMode::RECEIVE);
+        
+        //customer.setTimeoutOnReceive(tv);
     }
 
     Receiver_Thread::~Receiver_Thread()

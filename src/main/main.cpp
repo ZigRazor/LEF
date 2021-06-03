@@ -44,9 +44,9 @@ int main(int argc, char *argv[])
         //CHANNEL::ChannelDefinition::addChannelToMap("InfoExchange_Channel", "172.17.255.255", 4003);
         //CHANNEL::ChannelDefinition::addChannelToMap("ConnDisc_Channel", "172.17.255.255", 4002);
         //CHANNEL::ChannelDefinition::addChannelToMap("Leader_Channel", "172.17.255.255", 4001);
-        CHANNEL::ChannelDefinition::addChannelToMap("InfoExchange_Channel",CHANNEL::Channel::E_CommunicationType::UDP, "224.0.0.150", 4003);
-        CHANNEL::ChannelDefinition::addChannelToMap("ConnDisc_Channel",CHANNEL::Channel::E_CommunicationType::UDP, "224.0.0.150", 4002);
-        CHANNEL::ChannelDefinition::addChannelToMap("Leader_Channel",CHANNEL::Channel::E_CommunicationType::UDP, "224.0.0.150", 4001);
+        CHANNEL::ChannelDefinition::addChannelToMap("InfoExchange_Channel",CHANNEL::Channel::E_CommunicationType::TCP, "224.0.0.150", 4003);
+        CHANNEL::ChannelDefinition::addChannelToMap("ConnDisc_Channel",CHANNEL::Channel::E_CommunicationType::TCP, "224.0.0.150", 4002);
+        CHANNEL::ChannelDefinition::addChannelToMap("Leader_Channel",CHANNEL::Channel::E_CommunicationType::TCP, "224.0.0.150", 4001);
         ////////////////////
 
         RECEIVER::Receiver_Thread *receiver_LeaderChannel;
@@ -59,7 +59,7 @@ int main(int argc, char *argv[])
             std::ostringstream ss_;
             ss_ << "Receiver_LeaderChannel";
             INIT_LOGGER(ss_.str());
-            receiver_LeaderChannel = new RECEIVER::Receiver_Thread(CHANNEL::ChannelDefinition::getChannelByName("Leader_Channel")->GetIP(), CHANNEL::ChannelDefinition::getChannelByName("Leader_Channel")->GetPort(), tv);
+            receiver_LeaderChannel = new RECEIVER::Receiver_Thread(*CHANNEL::ChannelDefinition::getChannelByName("Leader_Channel"), tv);
             receiver_LeaderChannel->Run();
             delete receiver_LeaderChannel;
             receiver_LeaderChannel = nullptr;
@@ -78,7 +78,7 @@ int main(int argc, char *argv[])
             std::ostringstream ss_;
             ss_ << "Receiver_ConnDisc_Channel";
             INIT_LOGGER(ss_.str());
-            receiver_ConnDisc_Channel = new RECEIVER::Receiver_Thread(CHANNEL::ChannelDefinition::getChannelByName("ConnDisc_Channel")->GetIP(), CHANNEL::ChannelDefinition::getChannelByName("ConnDisc_Channel")->GetPort(), tv);
+            receiver_ConnDisc_Channel = new RECEIVER::Receiver_Thread(*CHANNEL::ChannelDefinition::getChannelByName("ConnDisc_Channel"), tv);
             receiver_ConnDisc_Channel->Run();
             delete receiver_ConnDisc_Channel;
             receiver_ConnDisc_Channel = nullptr;
@@ -97,7 +97,7 @@ int main(int argc, char *argv[])
             std::ostringstream ss_;
             ss_ << "Receiver_InfoExchange";
             INIT_LOGGER(ss_.str());
-            receiver_InfoExchange_Channel = new RECEIVER::Receiver_Thread(CHANNEL::ChannelDefinition::getChannelByName("InfoExchange_Channel")->GetIP(), CHANNEL::ChannelDefinition::getChannelByName("InfoExchange_Channel")->GetPort(), tv);
+            receiver_InfoExchange_Channel = new RECEIVER::Receiver_Thread(*CHANNEL::ChannelDefinition::getChannelByName("InfoExchange_Channel"), tv);
             receiver_InfoExchange_Channel->Run();
             delete receiver_InfoExchange_Channel;
             receiver_InfoExchange_Channel = nullptr;
@@ -131,8 +131,9 @@ int main(int argc, char *argv[])
             //setup Logger
             std::ostringstream ss_;
             ss_ << "Sender_Thread";
-            INIT_LOGGER(ss_.str());
-            sender = new SENDER::Sender_Thread(ip, port - 1, tv);
+            INIT_LOGGER(ss_.str());            
+            CHANNEL::ChannelDefinition::addChannelToMap("send", CHANNEL::Channel::E_CommunicationType::TCP,ip,port);
+            sender = new SENDER::Sender_Thread(*CHANNEL::ChannelDefinition::getChannelByName("send"), tv);
             sender->Run();
             delete sender;
             sender = nullptr;

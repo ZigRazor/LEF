@@ -39,14 +39,15 @@ namespace CONNECTION
 		int disconnect();
 
 		int receiveMessage(char *buffer, size_t len) const;
-    	int sendMessage(const char *buffer,const size_t len, const CHANNEL::Channel &channel);
+		int sendMessage(const char *buffer, const size_t len, const CHANNEL::Channel &channel);
 
 	private:
-		void socketConnection(zmq::socket_t* socket_ptr, const CHANNEL::Channel &channel);
+		void socketConnection(zmq::socket_t *socket_ptr, const CHANNEL::Channel &channel);
 
 		zmq::context_t context{1};
-		std::map<std::string, zmq::socket_t*> sendSocket;
-		std::map<std::string, zmq::socket_t*> recvSocket;
+		std::map<std::string, zmq::socket_t *> sendSocket;
+		std::map<std::string, zmq::socket_t *> recvSocket;
+		std::vector<zmq::pollitem_t> pollingItems;
 	};
 }
 #endif

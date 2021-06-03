@@ -2,7 +2,8 @@
 #define RECEIVER_THREAD_H
 #pragma once
 #include <sstream>
-#include "connection/UDPConnectionCustomer.hpp"
+#include "connection/ConnectionCustomer.hpp"
+#include "channel/Channel.hpp"
 #include "logger/logger.hpp"
 
 namespace RECEIVER
@@ -11,13 +12,13 @@ namespace RECEIVER
 	class Receiver_Thread
 	{
 	private:
-		CONNECTION::UDPConnectionCustomer customer;
+		CONNECTION::ConnectionCustomer customer;
 		bool exit;
 		std::string address;
 		unsigned int portNumber;
 		
 	public:
-		Receiver_Thread(std::string addr, unsigned int port, struct timeval tv = {1, 0});
+		Receiver_Thread(const CHANNEL::Channel &channel, struct timeval tv = {1, 0});
 		~Receiver_Thread();
 		void Run();
 

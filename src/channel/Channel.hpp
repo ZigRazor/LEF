@@ -12,7 +12,9 @@ namespace CHANNEL
 		{
 			INPROC,
 			UDP,
-			TCP
+			TCP,
+			EPGM,
+			PGM
 		} E_CommunicationType;
 
 		Channel(const std::string& channelName, E_CommunicationType communicationType, const std::string& IP, unsigned int port);

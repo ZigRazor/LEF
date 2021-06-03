@@ -15,10 +15,12 @@ set(DISPATCHER_DIR ${SRC_DIR}/dispatcher)
 set(HANDLER_DIR ${SRC_DIR}/handler)
 set(CHANNEL_DIR ${SRC_DIR}/channel)
 set(SENDER_DIR ${SRC_DIR}/sender)
+set(ZMQ_DIR ${ROOT_DIR}/cppzmq)
 
 
 # Add main.cpp file of project root directory as source file
-set(SOURCE_FILES  ${CONNECTION_DIR}/UDPConnectionCustomer.cpp 
+set(SOURCE_FILES  ${CONNECTION_DIR}/UDPConnectionCustomer.cpp
+                    ${CONNECTION_DIR}/ConnectionCustomer.cpp
                     ${MSG_DIR}/MessageHeader.cpp 
                     ${MSG_DIR}/ConnectToNet_Msg.cpp
                     ${MSG_DIR}/DisconnectFromNet_Msg.cpp
@@ -44,20 +46,20 @@ set(SOURCE_FILES  ${CONNECTION_DIR}/UDPConnectionCustomer.cpp
 # Add executable target with source files listed in SOURCE_FILES variable
 add_executable(main_example ${MAIN_DIR}/main.cpp ${SOURCE_FILES})
 
-target_include_directories(main_example PUBLIC ${SRC_DIR})
+target_include_directories(main_example PUBLIC ${SRC_DIR} ${ZMQ_DIR})
 find_package (Threads REQUIRED)
 
-target_link_libraries(main_example  ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(main_example  ${CMAKE_THREAD_LIBS_INIT} zmq)
 
 ################################### TESTS #####################################
 
 set (TEST_DIR ${ROOT_DIR}/test)
 add_executable(sender ${TEST_DIR}/send_receive/sender.cpp ${SOURCE_FILES})
-target_include_directories(sender PUBLIC ${SRC_DIR})
-target_link_libraries(sender  ${CMAKE_THREAD_LIBS_INIT})
+target_include_directories(sender PUBLIC ${SRC_DIR} ${ZMQ_DIR})
+target_link_libraries(sender  ${CMAKE_THREAD_LIBS_INIT} zmq)
 add_executable(receiver ${TEST_DIR}/send_receive/receiver.cpp ${SOURCE_FILES})
-target_include_directories(receiver PUBLIC ${SRC_DIR})
-target_link_libraries(receiver  ${CMAKE_THREAD_LIBS_INIT})
+target_include_directories(receiver PUBLIC ${SRC_DIR} ${ZMQ_DIR})
+target_link_libraries(receiver  ${CMAKE_THREAD_LIBS_INIT} zmq)
 
 
 ###############################################################################
